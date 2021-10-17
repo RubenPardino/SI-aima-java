@@ -272,9 +272,9 @@ public class GeneticAlgorithm<A> {
 				menorFitness = fitnessFn.apply(population.get(i));
 		}
 		
-		//Escalado de fitness FALTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-		//for (int i = 0; i < population.size(); i++)
-			//fValues -= 
+		//Escalado de fitness
+		for (int i = 0; i < population.size(); i++)
+			fValues[i] -= menorFitness;
 		
 		// Normalize the fitness values
 		fValues = Util.normalize(fValues);
