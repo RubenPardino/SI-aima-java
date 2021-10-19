@@ -98,6 +98,23 @@ public class NQueensGenAlgoUtil {
 			return fitness;
 		}
 	}
+	
+	public static class NQueensAttackedFitnessFunction implements FitnessFunction<Integer> {
+
+		public double apply(Individual<Integer> individual) {
+			double fitness = 0;
+
+			NQueensBoard board = getBoardForIndividual(individual);
+			List<XYLocation> qPositions = board.getQueenPositions();
+			
+			for (XYLocation position : qPositions) {
+				if (board.getNumberOfAttacksOn(position) == 0)
+					fitness += 1.0;
+			}
+			
+			return fitness;
+		}
+	}
 
 	public static class NQueensGenAlgoGoalTest implements Predicate<Individual<Integer>> {
 		private final Predicate<NQueensBoard> goalTest = NQueensFunctions::testGoal;

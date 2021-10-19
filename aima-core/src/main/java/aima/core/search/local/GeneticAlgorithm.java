@@ -62,19 +62,21 @@ public class GeneticAlgorithm<A> {
 	protected int individualLength;
 	protected List<A> finiteAlphabet;
 	protected double mutationProbability;
+	protected double crossoverProbability;
 	
 	protected Random random;
 	private List<ProgressTracker<A>> progressTrackers = new ArrayList<>();
 
-	public GeneticAlgorithm(int individualLength, Collection<A> finiteAlphabet, double mutationProbability) {
-		this(individualLength, finiteAlphabet, mutationProbability, new Random());
+	public GeneticAlgorithm(int individualLength, Collection<A> finiteAlphabet, double mutationProbability, double crossoverProbability) {
+		this(individualLength, finiteAlphabet, mutationProbability, crossoverProbability, new Random());
 	}
 
-	public GeneticAlgorithm(int individualLength, Collection<A> finiteAlphabet, double mutationProbability,
+	public GeneticAlgorithm(int individualLength, Collection<A> finiteAlphabet, double mutationProbability, double crossoverProbability,
 			Random random) {
 		this.individualLength = individualLength;
 		this.finiteAlphabet = new ArrayList<A>(finiteAlphabet);
 		this.mutationProbability = mutationProbability;
+		this.crossoverProbability = crossoverProbability;
 		this.random = random;
 
 		assert (this.mutationProbability >= 0.0 && this.mutationProbability <= 1.0);
@@ -244,14 +246,20 @@ public class GeneticAlgorithm<A> {
 			// y <- RANDOM-SELECTION(population, FITNESS-FN)
 			Individual<A> y = randomSelection(population, fitnessFn);
 			// child <- REPRODUCE(x, y)
-			//Individual<A> child = reproduce(x, y);
-			Individual<A> child = reproduceOX(x, y);
-			// if (small random probability) then child <- MUTATE(child)
-			if (random.nextDouble() <= mutationProbability) {
-				child = mutate(child);
+			
+			if (random.nextDouble() <= crossoverProbability) {
+				//Individual<A> child = reproduce(x, y);
+				Individual<A> child = reproduceOX(x, y);
+				
+				// if (small random probability) then child <- MUTATE(child)
+				if (random.nextDouble() <= mutationProbability) {
+					child = mutate(child);
+				}
+				// add child to new_population. Reemplazo incondicional, los hijos sustituyen a los padres si o si
+				newPopulation.add(child);
+			} else {
+				newPopulation.add(x);
 			}
-			// add child to new_population. Reemplazo incondicional, los hijos sustituyen a los padres si o si
-			newPopulation.add(child);
 		}
 		notifyProgressTrackers(getIterations(), population);
 		return newPopulation;
@@ -309,7 +317,7 @@ public class GeneticAlgorithm<A> {
 		return new Individual<A>(childRepresentation);
 	}
 	
-	protected Individual<A> reproduceOX(Individual<A> x, Individual<A> y) {    // REPASALO, IGUAL FUNCIONA BIEN, CREO QUE SI
+	protected Individual<A> reproduceOX(Individual<A> x, Individual<A> y) {
 		// n <- LENGTH(x);
 		// Note: this is = this.individualLength
 		// c <- random number from 1 to n

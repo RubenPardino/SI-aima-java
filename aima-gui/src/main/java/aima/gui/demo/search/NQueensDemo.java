@@ -83,7 +83,7 @@ public class NQueensDemo {
 			population.add(NQueensGenAlgoUtil.generateRandomIndividual(boardSize));
 
 		GeneticAlgorithm<Integer> ga = new GeneticAlgorithm<>(boardSize,
-				NQueensGenAlgoUtil.getFiniteAlphabetForBoardOfSize(boardSize), mutationProbability);
+				NQueensGenAlgoUtil.getFiniteAlphabetForBoardOfSize(boardSize), mutationProbability, crossoverProbability);
 
 		// Run for a set amount of time
 		//Individual<Integer> bestIndividual = ga.geneticAlgorithm(population, fitnessFunction, goalTest, 1000L);
